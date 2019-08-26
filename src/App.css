@@ -82,3 +82,13 @@ button{
   width: 50%;
   text-align: center;
 }
+
+#author{
+  width: 30%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+a{
+  text-decoration: none;
+}

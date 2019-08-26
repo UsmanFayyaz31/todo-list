@@ -1,64 +1,34 @@
 import React from 'react';
-// import logo from './logo.svg';
 import './App.css';
 
 class DisplayData extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      array: this.props.inp,
-      arrayTemp: [],
-      msg: ""
-    }
-    this.doneTask = this.doneTask.bind(this);
-    this.unDoneTask = this.unDoneTask.bind(this);
-  }
-
-  doneTask(){
-    var temp =[];
-    var input = this.props.inp;
-
-    for(var i in input) {
-      if(input[i].checked === true) {
-        temp.push(input[i]);
-      }
-    }
-    if(temp.length !== 0) {
-      this.setState({
-        arrayTemp: temp,
-        msg: "The completed tasks are:"
-      });
-    }
-  }
-
-  unDoneTask(){
-    var temp =[];
-    var input = this.props.inp;
-
-    for(var i in input) {
-      if(input[i].checked === false) {
-        temp.push(input[i]);
-      }
-    }
-
-    if(temp.length !== 0) {
-      this.setState({
-        arrayTemp: temp,
-        msg: "The incomplete tasks are:"
-      });
-    }
-  }
-
   render() {
-    var list = this.state.arrayTemp.map(i=> <li key = {i.data+1}>{i.data}</li>);
+    var temp = this.props.inp;
+    var completeTasks = this.props.inp.map(function (i) {
+      if (i.checked === true) {
+        return <li key={temp.indexOf(i)}>{i.data}</li>
+      }
+    });
+
+    var inCompleteTasks = this.props.inp.map(function (i) {
+      if (i.checked === false) {
+        return <li key={temp.indexOf(i)}>{i.data}</li>
+      }
+    });
     return (
       <div>
-        <button style={{marginRight: 20}} onClick={this.doneTask}>Show Complete Tasks</button>
-        <button onClick={this.unDoneTask}>Show Incomplete Tasks</button>
-        <h3>{this.state.msg}</h3>
-        <ul>
-          {list}
-        </ul>
+        <div id="incompleted-list">
+          <h2>Incomplete Tasks</h2>
+          <ul>
+            {inCompleteTasks}
+          </ul>
+        </div>
+        <div id="completed-list">
+          <h2>Complete Tasks</h2>
+          <ul>
+            {completeTasks}
+          </ul>
+        </div>
       </div>
     );
   }
@@ -77,7 +47,7 @@ class MyData extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
   }
-  
+
   handleChange(event) {
     this.setState({
       input: event.target.value
@@ -87,12 +57,12 @@ class MyData extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     var temp = this.state.arr;
-    var temp1={
+    var temp1 = {
       data: this.state.input,
       checked: false
     }
     temp.push(temp1);
-    
+    temp.sort(function (a, b) { return a.checked - b.checked });
     this.setState({
       input: '',
       submit: this.state.input,
@@ -100,23 +70,23 @@ class MyData extends React.Component {
     });
   }
 
-  handleCheck(event){
+  handleCheck(event) {
     var tempArr = this.state.arr;
-    
-    for(var i in this.state.arr) {
-      if(tempArr[i].data === event.target.value){
-        tempArr[i].checked = !tempArr[i].checked;
-      }
-    }
+    var index = event.currentTarget.dataset.id;
+
+    tempArr[index].checked = !tempArr[index].checked;
+    tempArr.sort(function (a, b) { return a.checked - b.checked });
+
     this.setState({
       arr: tempArr
     });
   }
 
-  handleDelete(event){
+  handleDelete(event) {
     event.preventDefault();
+    var index = event.currentTarget.dataset.id;
     var temp = this.state.arr;
-    temp = temp.filter(a => a.data !== event.target.value);
+    temp.splice(index, 1);
 
     this.setState({
       arr: temp
@@ -125,24 +95,30 @@ class MyData extends React.Component {
   }
 
   render() {
-    const items = this.state.arr.map(i => 
-      <li key={i.data+1}>
-        <input onChange={this.handleCheck} type="checkbox" value={i.data} /> 
-        {(i.checked === true) ? <p style={{textDecoration: "line-through"}}>{i.data}</p> : <p>{i.data}</p>}
-        <button id="delButton" value={i.data} onClick={this.handleDelete}>x</button>
+    const items = this.state.arr.map(i =>
+      <li key={this.state.arr.indexOf(i)} >
+        <input onChange={this.handleCheck} data-id={this.state.arr.indexOf(i)} type="checkbox" value={i.data} checked={(i.checked === true) ? true : false} />
+        {(i.checked === true) ? <p style={{ textDecoration: "line-through" }}>{i.data}</p> : <p>{i.data}</p>}
+        <button id="delButton" value={i.data} data-id={this.state.arr.indexOf(i)} onClick={this.handleDelete}>x</button>
       </li>
     );
-    return(
-      <div className="form">
-        <h2>Todo List</h2>
-        <form>
-          <input type='text' value={this.state.input} onChange={this.handleChange}/>
-          <button className="roundButton" onClick={this.handleSubmit}>+</button>
-        </form>
-        <ul>
-          {items}
-        </ul>
-        <DisplayData inp = {this.state.arr}/>
+    return (
+      <div>
+        <div className="form">
+          <h2>Todo List</h2>
+          <form>
+            <input type='text' value={this.state.input} onChange={this.handleChange} />
+            <button className="roundButton" onClick={this.handleSubmit}>+</button>
+          </form>
+          <ul>
+            {items}
+          </ul>
+          <DisplayData inp={this.state.arr} />
+        </div>
+        <div id="author">
+          <p>Designed and Coded by</p> <br />
+          <a href="https://github.com/UsmanFayyaz/todo-list">Usman Fayyaz</a>
+        </div>
       </div>
     );
   }
@@ -150,7 +126,7 @@ class MyData extends React.Component {
 
 function App() {
   return (
-      <MyData />
+    <MyData />
   );
 }
 
