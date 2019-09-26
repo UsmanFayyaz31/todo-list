@@ -116,8 +116,8 @@ class MyData extends React.Component {
           <DisplayData inp={this.state.arr} />
         </div>
         <div id="author">
-          <p>Designed and Coded by</p> <br />
-          <a href="https://github.com/UsmanFayyaz/todo-list">Usman Fayyaz</a>
+          <p>Designed and Coded by <b>Usman Fayyaz</b>.</p> <br />
+          <a href="https://github.com/UsmanFayyaz/todo-list">Link to github repository.</a>
         </div>
       </div>
     );
