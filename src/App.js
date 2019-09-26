@@ -107,7 +107,7 @@ class MyData extends React.Component {
         <div className="form">
           <h2>Todo List</h2>
           <form>
-            <input type='text' value={this.state.input} onChange={this.handleChange} />
+            <input id="text-field" type='text' value={this.state.input} onChange={this.handleChange} />
             <button className="roundButton" onClick={this.handleSubmit}>+</button>
           </form>
           <ul>
